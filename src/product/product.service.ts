@@ -21,16 +21,24 @@ export class ProductService {
     }
   }
 
-  findAll(paginationDto: PaginationDto) {
+  async findAll(paginationDto: PaginationDto): Promise<any> {
     const { limit = 5, page = 1 } = paginationDto;
     const offset = (page - 1) * limit;
 
-    return this.productModel
+    const total = await this.productModel.countDocuments();
+    const result = await this.productModel
       .find()
       .skip(offset)
       .limit(limit)
       .sort({ _id: 1 })
       .select('-__v');
+
+    return {
+      total,
+      page,
+      limit,
+      data: result,
+    };
   }
 
   findOne(id: number) {
