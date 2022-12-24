@@ -13,10 +13,14 @@ import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongoid.pipe';
+import { SearchService } from './search/search.service';
 
 @Controller('product')
 export class ProductController {
-  constructor(private readonly productService: ProductService) {}
+  constructor(
+    private readonly productService: ProductService,
+    private readonly seachService: SearchService,
+  ) {}
 
   @Post()
   create(@Body() createProductDto: CreateProductDto) {
@@ -45,5 +49,10 @@ export class ProductController {
   @Delete(':id')
   remove(@Param('id', ParseMongoIdPipe) id: string) {
     return this.productService.remove(id);
+  }
+
+  @Get('search/:text')
+  search(@Param('text') text: string) {
+    return this.seachService.search(text);
   }
 }
