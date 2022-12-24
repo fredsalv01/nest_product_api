@@ -13,6 +13,8 @@ class Brand {
 
 @Schema()
 export class Product extends Document {
+  _id: string;
+
   @Prop({
     unique: true,
     required: true,

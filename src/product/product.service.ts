@@ -51,8 +51,17 @@ export class ProductService {
     return result;
   }
 
-  update(id: number, updateProductDto: UpdateProductDto) {
-    return `This action updates a #${id} product`;
+  async update(id: string, updateProductDto: UpdateProductDto) {
+    const product = await this.findOne(id);
+    if (!product) {
+      throw new BadRequestException(`No se encontró el producto con id ${id}`);
+    }
+    try {
+      await product.updateOne(updateProductDto, { new: true });
+      return { ...product.toJSON(), ...updateProductDto };
+    } catch (error) {
+      this.handleExceptions(error);
+    }
   }
 
   async remove(id: string) {
@@ -60,7 +69,9 @@ export class ProductService {
       _id: id,
     });
     if (deletedCount === 0)
-      throw new BadRequestException(`Pokemon with id "${id}" not found`);
+      throw new BadRequestException(
+        `Producto con el id "${id}" no se encontró`,
+      );
 
     return `Producto con id ${id} eliminado`;
   }
