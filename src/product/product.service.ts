@@ -41,8 +41,14 @@ export class ProductService {
     };
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} product`;
+  async findOne(id: string) {
+    const result = await this.productModel.findById(id).select('-__v');
+
+    if (!result) {
+      throw new BadRequestException(`No se encontró el producto con id ${id}`);
+    }
+
+    return result;
   }
 
   update(id: number, updateProductDto: UpdateProductDto) {

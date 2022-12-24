@@ -12,6 +12,7 @@ import { ProductService } from './product.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { PaginationDto } from 'src/common/dto/pagination.dto';
+import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongoid.pipe';
 
 @Controller('product')
 export class ProductController {
@@ -29,8 +30,8 @@ export class ProductController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productService.findOne(+id);
+  findOne(@Param('id', ParseMongoIdPipe) id: string) {
+    return this.productService.findOne(id);
   }
 
   @Patch(':id')
@@ -39,7 +40,7 @@ export class ProductController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseMongoIdPipe) id: string) {
     return this.productService.remove(+id);
   }
 }
