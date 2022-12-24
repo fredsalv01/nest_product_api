@@ -55,8 +55,14 @@ export class ProductService {
     return `This action updates a #${id} product`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} product`;
+  async remove(id: string) {
+    const { deletedCount } = await this.productModel.deleteOne({
+      _id: id,
+    });
+    if (deletedCount === 0)
+      throw new BadRequestException(`Pokemon with id "${id}" not found`);
+
+    return `Producto con id ${id} eliminado`;
   }
 
   private handleExceptions(error: any) {

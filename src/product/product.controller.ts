@@ -41,6 +41,6 @@ export class ProductController {
 
   @Delete(':id')
   remove(@Param('id', ParseMongoIdPipe) id: string) {
-    return this.productService.remove(+id);
+    return this.productService.remove(id);
   }
 }
