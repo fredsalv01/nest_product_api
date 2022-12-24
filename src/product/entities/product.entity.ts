@@ -14,6 +14,7 @@ class Brand {
 @Schema()
 export class Product extends Document {
   @Prop({
+    unique: true,
     required: true,
     index: true,
   })
