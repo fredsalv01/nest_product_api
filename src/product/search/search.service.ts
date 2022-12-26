@@ -14,7 +14,7 @@ export class SearchService {
     let product: Product;
 
     product = await this.productModel.findOne({
-      name: { $regex: text, $options: 'i' },
+      slug: { $regex: text, $options: 'i' },
     });
 
     //is mongo id?
@@ -25,19 +25,19 @@ export class SearchService {
     // is category?
     if (!product) {
       product = await this.productModel.findOne({
-        category: { $regex: text, $options: 'i' },
+        'category.slug': { $regex: text, $options: 'i' },
       });
     }
 
     // is brand?
     if (!product) {
       product = await this.productModel.findOne({
-        brand: { $regex: text, $options: 'i' },
+        'brand.slug': { $regex: text, $options: 'i' },
       });
     }
 
     return {
-      text,
+      product,
     };
   }
 }
