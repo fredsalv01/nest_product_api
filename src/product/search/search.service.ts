@@ -11,6 +11,7 @@ export class SearchService {
   ) {}
 
   async search(text: string) {
+    text = text.trim().toLowerCase();
     let product: Product;
 
     product = await this.productModel.findOne({
