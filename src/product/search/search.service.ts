@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
-import { Model, isValidObjectId } from 'mongoose';
+import { Model } from 'mongoose';
 import { Product } from '../entities/product.entity';
 
 @Injectable()
@@ -12,27 +12,22 @@ export class SearchService {
 
   async search(text: string) {
     text = text.trim().toLowerCase();
-    let product: Product;
+    let product: Product[];
 
-    product = await this.productModel.findOne({
+    product = await this.productModel.find({
       slug: { $regex: text, $options: 'i' },
     });
 
-    //is mongo id?
-    if (!product && isValidObjectId(text)) {
-      product = await this.productModel.findById(text);
-    }
-
     // is category?
     if (!product) {
-      product = await this.productModel.findOne({
+      product = await this.productModel.find({
         'category.slug': { $regex: text, $options: 'i' },
       });
     }
 
     // is brand?
     if (!product) {
-      product = await this.productModel.findOne({
+      product = await this.productModel.find({
         'brand.slug': { $regex: text, $options: 'i' },
       });
     }
