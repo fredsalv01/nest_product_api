@@ -16,40 +16,20 @@ export class SearchService {
     const offset = (page - 1) * limit;
 
     text = text.trim().toLowerCase();
-    let product: Product[];
 
-    product = await this.productModel
+    const product = await this.productModel
       .find({
-        slug: { $regex: text, $options: 'i' },
+        $or: [
+          { name: { $regex: text, $options: 'i' } },
+          { slug: { $regex: text, $options: 'i' } },
+          { 'category.slug': { $regex: text, $options: 'i' } },
+          { 'brand.slug': { $regex: text, $options: 'i' } },
+        ],
       })
       .skip(offset)
       .limit(limit)
       .sort({ _id: 1 })
       .select('-__v');
-
-    // is category?
-    if (!product) {
-      product = await this.productModel
-        .find({
-          'category.slug': { $regex: text, $options: 'i' },
-        })
-        .skip(offset)
-        .limit(limit)
-        .sort({ _id: 1 })
-        .select('-__v');
-    }
-
-    // is brand?
-    if (!product) {
-      product = await this.productModel
-        .find({
-          'brand.slug': { $regex: text, $options: 'i' },
-        })
-        .skip(offset)
-        .limit(limit)
-        .sort({ _id: 1 })
-        .select('-__v');
-    }
 
     return {
       total: product.length,
