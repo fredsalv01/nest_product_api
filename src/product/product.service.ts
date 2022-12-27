@@ -65,15 +65,12 @@ export class ProductService {
   }
 
   async remove(id: string) {
-    const { deletedCount } = await this.productModel.deleteOne({
-      _id: id,
-    });
-    if (deletedCount === 0)
-      throw new BadRequestException(
-        `Producto con el id "${id}" no se encontró`,
-      );
-
-    return `Producto con id ${id} eliminado`;
+    const product = await this.findOne(id);
+    if (!product) {
+      throw new BadRequestException(`No se encontró el producto con id ${id}`);
+    }
+    await product.deleteOne();
+    return { message: `Producto con id ${id} eliminado` };
   }
 
   private handleExceptions(error: any) {
